@@ -78,7 +78,7 @@ button.enabled {
     <label>Director Name</label>
     <input type="text" id="director" required>
 
-    <label>Company Reg. No.</label>
+    <label>Company Reg. No</label>
     <input type="text" id="regno" required>
 
     <div class="consent">
@@ -142,12 +142,12 @@ function sendWhatsApp() {
   var ref = generateReference();
 
   var message =
-    "🔐PASSWORD REQUEST BATCH 4-JV\n\n" +
+    "🔐 PASSWORD REQUEST BATCH 4-JV\n\n" +
     "Reference : " + ref + "\n" +
-    "Company   : " + company + "\n" +
-    "Director  : " + director + "\n" +
-    "Reg No    : " + regno + "\n" +
-    "Time      : " + datetime + "\n\n" +
+    "Company Name: " + company + "\n" +
+    "Director Name: " + director + "\n" +
+    "Company Reg. No: " + regno + "\n" +
+    "Time: " + datetime + "\n\n" +
     "Consent:\n" +
     "By providing the details above, I hereby confirm that I am the authorized " +
     "recipient to request or to receive this password.";
@@ -161,3 +161,4 @@ function sendWhatsApp() {
 
 </body>
 </html>
+
