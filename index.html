@@ -104,11 +104,9 @@ function toggleButton() {
   if (consent.checked) {
     btn.disabled = false;
     btn.classList.add("enabled");
-    btn.style.cursor = "pointer";
   } else {
     btn.disabled = true;
     btn.classList.remove("enabled");
-    btn.style.cursor = "not-allowed";
   }
 }
 
@@ -120,17 +118,15 @@ function sendWhatsApp() {
   var now = new Date();
   var datetime = now.toLocaleString();
 
-  var consentText =
+  var message =
+    "🔐 PASSWORD REQUEST\n\n" +
+    "Company : " + company + "\n" +
+    "Director: " + director + "\n" +
+    "Phone   : " + phone + "\n" +
+    "Time    : " + datetime + "\n\n" +
+    "Consent:\n" +
     "By providing the details above, I hereby confirm that I am the authorized " +
     "recipient to request or to receive this password.";
-
-  var message =
-    "🔐 PASSWORD REQUEST%0A%0A" +
-    "Company : " + company + "%0A" +
-    "Director: " + director + "%0A" +
-    "Phone   : " + phone + "%0A" +
-    "Time    : " + datetime + "%0A%0A" +
-    "Consent:%0A" + consentText;
 
   var whatsappNumber = "60176701984"; // ⬅️ TUKAR NO AWAK
   var url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(message);
