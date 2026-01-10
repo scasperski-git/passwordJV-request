@@ -143,14 +143,14 @@ function sendWhatsApp() {
 
   var message =
     "🔐 PASSWORD REQUEST BATCH 4-JV\n\n" +
-    "Company Name     : " + company + "\n" +
-    "Director Name    : " + director + "\n" +
-    "Company Reg. No  : " + regno + "\n" +
-    "Time             : " + datetime + "\n\n" +
+    "Company Name : " + company + "\n" +
+    "Director Name : " + director + "\n" +
+    "Company Reg. No : " + regno + "\n" +
+    "Time : " + datetime + "\n\n" +
     "Consent:\n" +
     "By providing the details above, I hereby confirm that I am the authorized " +
     "recipient to request or to receive this password.\n\n" +
-    "Reference : " + ref;
+    "(Reference:)" + ref;
 
   var whatsappNumber = "60176701984"; // ⬅️ TUKAR NO AWAK
   var url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(message);
@@ -161,3 +161,4 @@ function sendWhatsApp() {
 
 </body>
 </html>
+
