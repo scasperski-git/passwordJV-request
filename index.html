@@ -33,6 +33,7 @@ input[type="text"] {
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  text-transform: uppercase;
 }
 .consent {
   font-size: 13px;
@@ -68,17 +69,17 @@ button.enabled {
 <body>
 
 <div class="container">
-  <h2>🔐Password Request BATCH 4-JV</h2>
+  <h2>🔐 Password Request BATCH 4-JV</h2>
 
-  <form onsubmit="sendWhatsApp(); return false;">
+  <form onsubmit="return validateAndSend();">
     <label>Company Name</label>
     <input type="text" id="company" required>
 
     <label>Director Name</label>
     <input type="text" id="director" required>
 
-    <label>Phone Number</label>
-    <input type="text" id="phone" required>
+    <label>Company Reg. No.</label>
+    <input type="text" id="regno" required>
 
     <div class="consent">
       <input type="checkbox" id="consent" onclick="toggleButton()">
@@ -110,20 +111,43 @@ function toggleButton() {
   }
 }
 
+function generateReference() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = String(now.getMonth() + 1).padStart(2, '0');
+  var d = String(now.getDate()).padStart(2, '0');
+  var h = String(now.getHours()).padStart(2, '0');
+  var min = String(now.getMinutes()).padStart(2, '0');
+  var s = String(now.getSeconds()).padStart(2, '0');
+
+  return "JV4-" + y + m + d + "-" + h + min + s;
+}
+
+function validateAndSend() {
+  if (!document.getElementById("consent").checked) {
+    alert("Please confirm authorization before sending.");
+    return false;
+  }
+  sendWhatsApp();
+  return false;
+}
+
 function sendWhatsApp() {
-  var company = document.getElementById("company").value;
-  var director = document.getElementById("director").value;
-  var phone = document.getElementById("phone").value;
+  var company = document.getElementById("company").value.toUpperCase();
+  var director = document.getElementById("director").value.toUpperCase();
+  var regno = document.getElementById("regno").value.toUpperCase();
 
   var now = new Date();
   var datetime = now.toLocaleString();
+  var ref = generateReference();
 
   var message =
-    "🔐 PASSWORD REQUEST BATCH 4-JV\n\n" +
-    "Company : " + company + "\n" +
-    "Director Name: " + director + "\n" +
-    "Phone   : " + phone + "\n" +
-    "Time    : " + datetime + "\n\n" +
+    "🔐PASSWORD REQUEST BATCH 4-JV\n\n" +
+    "Reference : " + ref + "\n" +
+    "Company   : " + company + "\n" +
+    "Director  : " + director + "\n" +
+    "Reg No    : " + regno + "\n" +
+    "Time      : " + datetime + "\n\n" +
     "Consent:\n" +
     "By providing the details above, I hereby confirm that I am the authorized " +
     "recipient to request or to receive this password.";
@@ -137,6 +161,3 @@ function sendWhatsApp() {
 
 </body>
 </html>
-
-
-
