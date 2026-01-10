@@ -142,12 +142,14 @@ function sendWhatsApp() {
   var ref = generateReference();
 
   var message =
-    "🔐 PASSWORD REQUEST BATCH 4-JV\n\n" +
-    "Reference : " + ref + "\n" +
-    "Company Name: " + company + "\n" +
-    "Director Name: " + director + "\n" +
-    "Company Reg. No: " + regno + "\n" +
-    "Time: " + datetime + "\n\n" +
+    "🔐 PASSWORD REQUEST BATCH 4-JV\n" +
+    "────────────────────────\n" +
+    "REF : " + ref + "\n" +
+    "TIME: " + datetime + "\n" +
+    "────────────────────────\n\n" +
+    "Company Name     : " + company + "\n" +
+    "Director Name    : " + director + "\n" +
+    "Company Reg. No  : " + regno + "\n\n" +
     "Consent:\n" +
     "By providing the details above, I hereby confirm that I am the authorized " +
     "recipient to request or to receive this password.";
@@ -161,4 +163,3 @@ function sendWhatsApp() {
 
 </body>
 </html>
-
