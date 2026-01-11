@@ -25,7 +25,7 @@ h2 {
 label {
   font-weight: bold;
 }
-input[type="text"] {
+input[type="text"], input[type="tel"] {
   width: 100%;
   padding: 10px;
   margin: 5px 0 15px;
@@ -68,35 +68,29 @@ button.enabled {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  display: inline-block;
   border: 4px solid #4CAF50;
+  margin: 0 auto 15px;
   position: relative;
-  animation: scaleIn 0.5s ease;
+  animation: pop 0.4s ease-out;
 }
-.checkmark:after {
-  content: "";
+.checkmark svg {
   position: absolute;
-  left: 22px;
-  top: 38px;
-  width: 20px;
-  height: 40px;
-  border-right: 4px solid #4CAF50;
-  border-bottom: 4px solid #4CAF50;
-  transform: rotate(45deg);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-@keyframes scaleIn {
+@keyframes pop {
   0% { transform: scale(0); }
   100% { transform: scale(1); }
 }
 .ref {
-  margin-top: 15px;
   font-weight: bold;
-  color: #333;
+  margin-top: 10px;
 }
 </style>
 
 <script>
-var IS_SUBMITTED = false; // double submit lock
+var IS_SUBMITTED = false;
 </script>
 </head>
 
@@ -116,9 +110,15 @@ var IS_SUBMITTED = false; // double submit lock
     <label>Company Reg. No</label>
     <input type="text" id="regno" required>
 
+    <label>Contact No</label>
+    <input type="tel" id="phone" placeholder="e.g. 60123456789" required>
+
     <div class="consent">
       <input type="checkbox" id="consent" onclick="toggleButton()">
-      I confirm this request is authorized.
+      By submitting this request, I acknowledge that I am requesting access to a
+      password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full
+      responsibility for its use. Unauthorized access or misuse may result in further
+      action.
     </div>
 
     <button type="submit" id="sendBtn" disabled>Send Request</button>
@@ -129,7 +129,16 @@ var IS_SUBMITTED = false; // double submit lock
 
 <!-- SUCCESS -->
 <div class="container successBox" id="successBox">
-  <div class="checkmark"></div>
+  <div class="checkmark">
+    <svg width="40" height="30" viewBox="0 0 52 40">
+      <path d="M2 20 L20 38 L50 2"
+        fill="none"
+        stroke="#4CAF50"
+        stroke-width="6"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+    </svg>
+  </div>
   <h2>Successfully Sent</h2>
   <div class="ref" id="refDisplay"></div>
   <p>Please wait for administrator response.</p>
@@ -153,31 +162,64 @@ function generateReference() {
     String(d.getSeconds()).padStart(2,"0");
 }
 
+async function getClientInfo() {
+  let ip = "UNKNOWN";
+  try {
+    const r = await fetch("https://api.ipify.org?format=json");
+    const j = await r.json();
+    ip = j.ip;
+  } catch(e){}
+
+  return {
+    ip: ip,
+    ua: navigator.userAgent,
+    platform: navigator.platform,
+    lang: navigator.language
+  };
+}
+
 function validateAndSend() {
   if (IS_SUBMITTED) return false;
+
+  var phone = document.getElementById("phone").value.trim();
+  if (!/^\d{10,15}$/.test(phone)) {
+    alert("Please enter valid phone number (digits only).");
+    return false;
+  }
+
   if (!document.getElementById("consent").checked) return false;
 
   IS_SUBMITTED = true;
-  document.getElementById("sendBtn").innerText = "Sending...";
-  document.getElementById("sendBtn").disabled = true;
+  var btn = document.getElementById("sendBtn");
+  btn.disabled = true;
+  btn.innerText = "Sending...";
 
   sendWhatsApp();
   return false;
 }
 
-function sendWhatsApp() {
+async function sendWhatsApp() {
   var company = companyVal = document.getElementById("company").value.toUpperCase();
   var director = document.getElementById("director").value.toUpperCase();
   var regno = document.getElementById("regno").value.toUpperCase();
+  var phone = document.getElementById("phone").value;
   var ref = generateReference();
   var time = new Date().toLocaleString();
 
+  const client = await getClientInfo();
+
   var msg =
     "🔐 PASSWORD REQUEST BATCH 5-JV\n\n" +
-    "Time: " + time + "\n" +
+    "Time: " + time + "\n\n" +
     "Company: " + company + "\n" +
     "Director: " + director + "\n" +
-    "Reg No: " + regno + "\n\n" +
+    "Reg No: " + regno + "\n" +
+    "Contact: " + phone + "\n\n" +
+    "Consent:\n" +
+    "By submitting this request, I acknowledge that I am requesting access to a " +
+    "password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full " +
+    "responsibility for its use. Unauthorized access or misuse may result in further " +
+    "action.\n\n" +
     "Ref No: " + ref;
 
   window.open(
@@ -185,25 +227,24 @@ function sendWhatsApp() {
     "_blank"
   );
 
-  logToGoogleSheet(time, company, director, regno, ref);
+  logToGoogleSheet(
+    time, company, director, regno, phone, ref,
+    client.ip, client.ua, client.platform, client.lang
+  );
 
   document.getElementById("formBox").style.display = "none";
   document.getElementById("successBox").style.display = "block";
   document.getElementById("refDisplay").innerText = "Reference No: " + ref;
 }
 
-/* ===== GOOGLE SHEET LOGGER ===== */
-function logToGoogleSheet(time, company, director, regno, ref) {
-  fetch("https://script.google.com/macros/s/AKfycbwTIPv4FGKXe0hBI6Nyz5fZw8wUzLUntpDc-nmhqI9r1-4NSVpXkPsGeh93w_6g8SQO/exec", {
+function logToGoogleSheet(time, company, director, regno, phone, ref, ip, ua, platform, lang) {
+  fetch("https://script.google.com/macros/s/AKfycbymB67fQgsPetEzgshawTF_vgvlrFjPMn92jTwRtZsb7fAk7G39HqpuGCu018xg7Q4I/exec", {
     method: "POST",
     mode: "no-cors",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      time: time,
-      company: company,
-      director: director,
-      regno: regno,
-      ref: ref
+      time, company, director, regno, phone, ref,
+      ip, ua, platform, lang
     })
   });
 }
@@ -211,5 +252,4 @@ function logToGoogleSheet(time, company, director, regno, ref) {
 
 </body>
 </html>
-
 
