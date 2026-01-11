@@ -210,12 +210,19 @@ async function sendWhatsApp() {
 
   var msg =
     "🔐 PASSWORD REQUEST BATCH 5-JV\n\n" +
-    "Time: " + time + "\n" +
+    "Time: " + time + "\n\n" +
     "Company: " + company + "\n" +
     "Director: " + director + "\n" +
     "Reg No: " + regno + "\n" +
     "Contact: " + phone + "\n\n" +
-    "Ref No: " + ref;
+    "Consent:\n" +
+    "By submitting this request, I acknowledge that I am requesting access to a " +
+    "password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full " +
+    "responsibility for its use. Unauthorized access or misuse may result in further " +
+    "action.\n\n" +
+
+    "Ref.No:" + ref;
+
 
   window.open(
     "https://wa.me/60176701984?text=" + encodeURIComponent(msg),
@@ -255,5 +262,6 @@ function logToGoogleSheet(time, company, director, regno, phone, ref, ip, ua, pl
 
 </body>
 </html>
+
 
 
