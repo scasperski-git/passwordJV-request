@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Password Request BATCH 4-JV</title>
+<title>Password Request Batch 4-JV</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -11,7 +11,7 @@ body {
   background: #f4f6f8;
   padding: 20px;
 }
-.container {
+.container, .maintenanceBox {
   max-width: 420px;
   margin: auto;
   background: #ffffff;
@@ -63,11 +63,30 @@ button.enabled {
   text-align: center;
   margin-top: 10px;
 }
+.maintenanceBox {
+  display: none;
+  text-align: center;
+}
 </style>
+
+<script>
+/* ===== MAINTENANCE TOGGLE ===== */
+var MAINTENANCE_MODE = true; // true = OFF | false = ON
+</script>
 </head>
 
 <body>
 
+<!-- MAINTENANCE MESSAGE -->
+<div id="maintenanceBox" class="maintenanceBox">
+  <h2>🚧 Password Request Temporarily Unavailable</h2>
+  <p>
+    This request link is currently under maintenance.<br>
+    Please contact the system administrator.
+  </p>
+</div>
+
+<!-- MAIN FORM -->
 <div class="container">
   <h2>🔐 Password Request BATCH 4-JV</h2>
 
@@ -98,6 +117,15 @@ button.enabled {
 </div>
 
 <script>
+/* ===== PAGE LOAD HANDLER ===== */
+window.onload = function () {
+  if (MAINTENANCE_MODE) {
+    document.querySelector(".container").style.display = "none";
+    document.getElementById("maintenanceBox").style.display = "block";
+  }
+};
+
+/* ===== FORM LOGIC ===== */
 function toggleButton() {
   var consent = document.getElementById("consent");
   var btn = document.getElementById("sendBtn");
@@ -150,7 +178,7 @@ function sendWhatsApp() {
     "Consent:\n" +
     "By providing the details above, I hereby confirm that I am the authorized " +
     "recipient to request or to receive this password.\n\n" +
-    "Ref#" + ref;
+    "Reference : " + ref;
 
   var whatsappNumber = "60176701984"; // ⬅️ TUKAR NO AWAK
   var url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(message);
@@ -161,9 +189,3 @@ function sendWhatsApp() {
 
 </body>
 </html>
-
-
-
-
-
-
