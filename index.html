@@ -59,7 +59,7 @@ button.enabled {
   margin-top: 10px;
 }
 
-/* ===== SUCCESS ===== */
+/* ===== SUCCESS ANIMATION ===== */
 .successBox {
   display: none;
   text-align: center;
@@ -111,7 +111,7 @@ var IS_SUBMITTED = false;
     <input type="text" id="regno" required>
 
     <label>Contact No</label>
-    <input type="tel" id="phone" placeholder="e.g. 0123456789" required>
+    <input type="tel" id="phone" placeholder="e.g. 60123456789" required>
 
     <div class="consent">
       <input type="checkbox" id="consent" onclick="toggleButton()">
@@ -182,8 +182,8 @@ function validateAndSend() {
   if (IS_SUBMITTED) return false;
 
   var phone = document.getElementById("phone").value.trim();
-  if (!/^\d{9,15}$/.test(phone)) {
-    alert("Please enter valid contact number (digits only).");
+  if (!/^\d{10,15}$/.test(phone)) {
+    alert("Please enter valid phone number (digits only).");
     return false;
   }
 
@@ -199,7 +199,7 @@ function validateAndSend() {
 }
 
 async function sendWhatsApp() {
-  var company = document.getElementById("company").value.toUpperCase();
+  var company = companyVal = document.getElementById("company").value.toUpperCase();
   var director = document.getElementById("director").value.toUpperCase();
   var regno = document.getElementById("regno").value.toUpperCase();
   var phone = document.getElementById("phone").value;
@@ -215,6 +215,11 @@ async function sendWhatsApp() {
     "Director: " + director + "\n" +
     "Reg No: " + regno + "\n" +
     "Contact: " + phone + "\n\n" +
+    "Consent:\n" +
+    "By submitting this request, I acknowledge that I am requesting access to a " +
+    "password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full " +
+    "responsibility for its use. Unauthorized access or misuse may result in further " +
+    "action.\n\n" +
     "Ref No: " + ref;
 
   window.open(
@@ -246,12 +251,9 @@ function logToGoogleSheet(time, company, director, regno, phone, ref, ip, ua, pl
   data.append("platform", platform);
   data.append("lang", lang);
 
-  fetch("https://script.google.com/macros/s/AKfycbwSlf87CEEHJK-TfaVmAh1NTWrcWJLWgvjboe8iHnkJj_2o7mR5c92Oi8KdnZggjCKq/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbykoT03ypKrrxL85aW054bji8zwEBZOZlZGX4S1lySMeNDi3QiQgYLJOFDVvVpWzj1b/exec", {
     method: "POST",
     body: data
   });
 }
-</script>
 
-</body>
-</html>
