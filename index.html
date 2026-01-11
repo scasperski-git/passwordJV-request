@@ -215,11 +215,6 @@ async function sendWhatsApp() {
     "Director: " + director + "\n" +
     "Reg No: " + regno + "\n" +
     "Contact: " + phone + "\n\n" +
-    "Consent:\n" +
-    "By submitting this request, I acknowledge that I am requesting access to a " +
-    "password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full " +
-    "responsibility for its use. Unauthorized access or misuse may result in further " +
-    "action.\n\n" +
     "Ref No: " + ref;
 
   window.open(
@@ -251,10 +246,8 @@ function logToGoogleSheet(time, company, director, regno, phone, ref, ip, ua, pl
   data.append("platform", platform);
   data.append("lang", lang);
 
-  fetch("https://script.google.com/macros/s/AKfycbxNqJtIHVGSWwwUjnBZAaPB9CUG3r6Xpa5xvP17SxigTPPlWM3HjEcIY2ROBZBMuTU_/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbyoawu9_1WMt6ZONp6HA6lQF21QpKTSET8tFgAEl68HqTjGlApivASL1bhhhcfxmrtF/exec", {
     method: "POST",
     body: data
   });
 }
-
-
