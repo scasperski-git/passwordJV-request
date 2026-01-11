@@ -251,9 +251,10 @@ function logToGoogleSheet(time, company, director, regno, phone, ref, ip, ua, pl
   data.append("platform", platform);
   data.append("lang", lang);
 
-  fetch("https://script.google.com/macros/s/AKfycbykoT03ypKrrxL85aW054bji8zwEBZOZlZGX4S1lySMeNDi3QiQgYLJOFDVvVpWzj1b/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbxNqJtIHVGSWwwUjnBZAaPB9CUG3r6Xpa5xvP17SxigTPPlWM3HjEcIY2ROBZBMuTU_/exec", {
     method: "POST",
     body: data
   });
 }
+
 
