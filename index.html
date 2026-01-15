@@ -302,7 +302,7 @@ function sendWhatsApp() {
   data.append("platform",navigator.platform);
   data.append("lang",navigator.language);
 
-  fetch("https://script.google.com/macros/s/AKfycby7riJ5-f4kSpmTGQc9zQENqhBAxYpST4VtmrYCo-XLIiu2VFKD-Orr391_QiXrOB77/exec",{method:"POST",body:data})
+  fetch("https://script.google.com/macros/s/AKfycbzh-0IvJ_BWwLB_rHEXT9UR4NMlbGOrPqsc1jVflPtia-Hnt03MvrXSkk3jJMZG8ElY/exec",{method:"POST",body:data})
   .then(r=>r.json())
   .then(res=>{
     if(res.status!=="OK"){
@@ -356,6 +356,7 @@ function phoneVal(){return document.getElementById("phone").value.trim();}
 
 </body>
 </html>
+
 
 
 
