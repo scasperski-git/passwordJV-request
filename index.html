@@ -181,33 +181,68 @@ function sendWhatsApp() {
   var ref = generateReference();
   var time = new Date().toLocaleString();
 
-  var msg =
-    "🔐 PASSWORD REQUEST BATCH 5-JV\n\n" +
-    "Time: " + time + "\n\n" +
-    "Company: " + company + "\n" +
-    "Director: " + director + "\n" +
-    "Reg No: " + regno + "\n" +
-    "Contact: " + phone + "\n\n" +
-    "Consent:\n" +
-    "By submitting this request, I acknowledge that I am requesting access to a " +
-    "password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full " +
-    "responsibility for its use. Unauthorized access or misuse may result in further " +
-    "action.\n\n" +
-    "Ref No: " + ref;
+  var data = new FormData();
+  data.append("time", time);
+  data.append("company", company);
+  data.append("director", director);
+  data.append("regno", regno);
+  data.append("phone", phone);
+  data.append("ref", ref);
+  data.append("ua", navigator.userAgent);
+  data.append("platform", navigator.platform);
+  data.append("lang", navigator.language);
 
-  // ✅ OPEN WHATSAPP FIRST
-  window.open(
-    "https://wa.me/60176701984?text=" + encodeURIComponent(msg),
-    "_blank"
-  );
+  fetch("https://script.google.com/macros/s/AKfycbzDuhYWeSeS_rh799_SS9KU1gmhaR0KpXkOstaTto8111hYuWgA3i9hy2eHbp0n4FLJ/exec", {
+    method: "POST",
+    body: data
+  })
+  .then(r => r.json())
+  .then(res => {
 
-  // ✅ LOG TO GOOGLE SHEET (BACKGROUND, TAK BLOCK)
-  logToGoogleSheet(time, company, director, regno, phone, ref);
+    // ❌ DUPLICATE → STOP SEMUA
+    if (res.status === "DUPLICATE") {
+      alert("⚠️ Request has already been submitted previously.\n\nPlease contact the administrator.");
 
-  document.getElementById("formBox").style.display = "none";
-  document.getElementById("successBox").style.display = "block";
-  document.getElementById("refDisplay").innerText = "Reference No: " + ref;
+      IS_SUBMITTED = false;
+      var btn = document.getElementById("sendBtn");
+      btn.innerText = "Send Request";
+      btn.disabled = false;
+      return;
+    }
+
+    // ❌ ERROR
+    if (res.status !== "OK") {
+      alert("Submission failed. Please try again.");
+      IS_SUBMITTED = false;
+      return;
+    }
+
+    // ✅ ONLY NOW OPEN WHATSAPP
+    var msg =
+      "🔐 PASSWORD REQUEST BATCH 5-JV\n\n" +
+      "Time: " + time + "\n\n" +
+      "Company: " + company + "\n" +
+      "Director: " + director + "\n" +
+      "Reg No: " + regno + "\n" +
+      "Contact: " + phone + "\n\n" +
+      "Ref No: " + ref;
+
+    window.open(
+      "https://wa.me/60176701984?text=" + encodeURIComponent(msg),
+      "_blank"
+    );
+
+    document.getElementById("formBox").style.display = "none";
+    document.getElementById("successBox").style.display = "block";
+    document.getElementById("refDisplay").innerText = "Reference No: " + ref;
+
+  })
+  .catch(() => {
+    alert("Network error. Please try again.");
+    IS_SUBMITTED = false;
+  });
 }
+
 
 function logToGoogleSheet(time, company, director, regno, phone, ref) {
 
@@ -222,7 +257,7 @@ function logToGoogleSheet(time, company, director, regno, phone, ref) {
   data.append("platform", navigator.platform);
   data.append("lang", navigator.language);
 
-  fetch("https://script.google.com/macros/s/AKfycbydAmICCNBnZg3iCkT2U7XdRf5JmlMLc7PxubTLp7BI_72dWkki43prwHwwTPRcTczs/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbysH9fDrsqHgfo4fZb-cbZB2erobpSjJOzcGekkR82Qrr_tmYOGBn74A_gVo2lFn60Q/exec", {
     method: "POST",
     body: data
   })
@@ -255,5 +290,6 @@ function logToGoogleSheet(time, company, director, regno, phone, ref) {
 
 </body>
 </html>
+
 
 
