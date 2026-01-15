@@ -222,12 +222,28 @@ function logToGoogleSheet(time, company, director, regno, phone, ref) {
   data.append("platform", navigator.platform);
   data.append("lang", navigator.language);
 
-
-  fetch("https://script.google.com/macros/s/AKfycbzDuhYWeSeS_rh799_SS9KU1gmhaR0KpXkOstaTto8111hYuWgA3i9hy2eHbp0n4FLJ/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbydAmICCNBnZg3iCkT2U7XdRf5JmlMLc7PxubTLp7BI_72dWkki43prwHwwTPRcTczs/exec", {
     method: "POST",
     body: data
-  }).catch(function(){});
+  })
+  .then(r => r.json())
+  .then(res => {
+
+    if (res.status === "DUPLICATE") {
+      alert("⚠️ Request already submitted.\n\nThis agency has made a request previously.");
+
+      IS_SUBMITTED = false;
+      document.getElementById("sendBtn").innerText = "Send Request";
+      document.getElementById("sendBtn").disabled = false;
+
+      document.getElementById("successBox").style.display = "none";
+      document.getElementById("formBox").style.display = "block";
+    }
+
+  })
+  .catch(function(){});
 }
+
 
 (function () {
   var year = new Date().getFullYear();
@@ -239,4 +255,5 @@ function logToGoogleSheet(time, company, director, regno, phone, ref) {
 
 </body>
 </html>
+
 
