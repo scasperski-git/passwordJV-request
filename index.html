@@ -271,7 +271,7 @@ function sendWhatsApp() {
   data.append("platform", navigator.platform);
   data.append("lang", navigator.language);
 
-  fetch("https://script.google.com/macros/s/AKfycbzuMRU24qOgf_Y3nPxY7VpXK100BGro-HSzVHZpjXhhjMn_xf7tp4YQZhRKil3UnoI/exec", { method:"POST", body:data })
+  fetch("https://script.google.com/macros/s/AKfycbzRyXGi1ewQNvzk3hQSmmKSUkOS0-wMbaMUFgetZeYqqoF97Bjc-gfX1Gq4H5ZKp2A2/exec", { method:"POST", body:data })
     .then(r=>r.json())
     .then(res=>{
       if(res.status!=="OK"){
@@ -321,3 +321,4 @@ function phoneVal(){ return document.getElementById("phone").value.trim(); }
 
 </body>
 </html>
+
