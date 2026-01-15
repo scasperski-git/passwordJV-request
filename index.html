@@ -39,9 +39,7 @@ input[type="text"], input[type="tel"] {
   text-transform: uppercase;
 }
 
-input.invalid {
-  border-color: #d93025;
-}
+input.invalid { border-color: #d93025; }
 
 .error {
   color: #d93025;
@@ -50,10 +48,7 @@ input.invalid {
   display: none;
 }
 
-.consent {
-  font-size: 13px;
-  margin-bottom: 15px;
-}
+.consent { font-size: 13px; margin-bottom: 15px; }
 
 button {
   width: 100%;
@@ -66,10 +61,7 @@ button {
   cursor: not-allowed;
   opacity: 0.6;
 }
-button.enabled {
-  cursor: pointer;
-  opacity: 1;
-}
+button.enabled { cursor: pointer; opacity: 1; }
 
 .note {
   font-size: 12px;
@@ -78,7 +70,6 @@ button.enabled {
   margin-top: 10px;
 }
 
-/* ===== OVERLAY ===== */
 #overlay {
   position: fixed;
   inset: 0;
@@ -96,15 +87,9 @@ button.enabled {
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
-  margin: auto;
 }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.statusIcon { text-align: center; margin-bottom: 15px; }
-.ref { font-weight: bold; margin-top: 10px; }
 .trademark {
   text-align: center;
   font-size: 11px;
@@ -123,143 +108,81 @@ button.enabled {
   </div>
 </div>
 
-<!-- FORM -->
 <div class="container" id="formBox">
-  <h2>🔐 Password Request Batch 5-JV</h2>
+<h2>🔐 Password Request Batch 5-JV</h2>
 
-  <form onsubmit="return validateAndSend();">
-    <label>Company Name</label>
-    <input type="text" id="company" placeholder="e.g. ABC COLLECTION SDN BHD">
-    <div class="error" id="errCompany">All fields are required</div>
+<form onsubmit="return validateAndSend();">
+<label>Company Name</label>
+<input id="company" placeholder="e.g. ABC COLLECTION SDN BHD">
+<div class="error" id="errCompany">All fields are required</div>
 
-    <label>Director Name</label>
-    <input type="text" id="director" placeholder="e.g. AHMAD BIN ALI">
-    <div class="error" id="errDirector">All fields are required</div>
+<label>Director Name</label>
+<input id="director" placeholder="e.g. AHMAD BIN ALI">
+<div class="error" id="errDirector">All fields are required</div>
 
-    <label>Company Reg. No</label>
-    <input type="text" id="regno" placeholder="e.g. 123456-A or 2025123265564">
-    <div class="error" id="errRegno">All fields are required</div>
+<label>Company Reg. No</label>
+<input id="regno" placeholder="e.g. 123456-A or 2025123265564">
+<div class="error" id="errRegno">All fields are required</div>
 
-    <label>Contact No</label>
-    <input type="tel" id="phone" inputmode="numeric" placeholder="e.g. 012-3456789">
-    <div class="error" id="errPhone">Phone number must start with 0</div>
+<label>Contact No</label>
+<input type="tel" id="phone" inputmode="numeric" placeholder="e.g. 012-3456789">
+<div class="error" id="errPhone">Phone number must start with 0</div>
 
-    <div class="consent">
-      <input type="checkbox" id="consent" onclick="toggleButton()">
-      By submitting this request, I acknowledge that I am requesting access to a
-      password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full
-      responsibility for its use. Unauthorized access or misuse may result in further
-      action.
-    </div>
-
-    <button type="submit" id="sendBtn" disabled>Send Request</button>
-  </form>
-
-  <div class="note">Request will be sent via WhatsApp</div>
+<div class="consent">
+<input type="checkbox" id="consent" onclick="toggleButton()">
+By submitting this request, I acknowledge that I am requesting access to a
+password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full
+responsibility for its use. Unauthorized access or misuse may result in further
+action.
 </div>
 
-<!-- SUCCESS -->
+<button id="sendBtn" disabled>Send Request</button>
+</form>
+
+<div class="note">Request will be sent via WhatsApp</div>
+</div>
+
 <div class="container" id="successBox" style="display:none;">
-  <div class="statusIcon" style="text-align:center;">📄</div>
-  <h2 style="text-align:center;">Request Prepared</h2>
+<h2 style="text-align:center;">Request Prepared</h2>
 
-  <!-- SUMMARY BOX -->
-  <div id="summaryBox" style="
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:15px;
-    font-size:13px;
-    margin-top:15px;
-    background:#fafafa;
-  "></div>
+<div id="summaryBox" style="border:1px solid #ddd;border-radius:8px;padding:15px;font-size:13px;background:#fafafa"></div>
 
-  <p style="font-size:12px;color:#666;text-align:center;margin-top:10px;">
-    Reference number is for tracking purposes only.
-  </p>
+<p style="font-size:12px;color:#666;text-align:center;margin-top:10px;">
+Reference number is for tracking purposes only.
+</p>
 
-  <p style="text-align:center;">
-    WhatsApp has been opened with your request details.<br><br>
-    <b>Please tap “Send” in WhatsApp to complete this request.</b><br><br>
-    After sending, you may safely close this page.
-  </p>
+<p style="text-align:center;">
+Please tap <b>Send</b> in WhatsApp to complete this request.
+</p>
 </div>
 
 <div class="trademark" id="trademark"></div>
 
 <script>
-var IS_SUBMITTED = false;
-var phoneInput = document.getElementById("phone");
+var IS_SUBMITTED=false;
+var phoneInput=document.getElementById("phone");
 
-/* ===== PHONE AUTO FORMAT + LIVE VALIDATION ===== */
-phoneInput.addEventListener("input", function () {
-
-  var digits = this.value.replace(/\D/g, "");
-
-  // auto format
-  if (digits.length > 3) {
-    this.value = digits.slice(0,3) + "-" + digits.slice(3,11);
-  } else {
-    this.value = digits;
-  }
-
-  // validation
-  if (digits && !digits.startsWith("0")) {
-    this.classList.add("invalid");
-    document.getElementById("errPhone").style.display = "block";
-  } else {
-    this.classList.remove("invalid");
-    document.getElementById("errPhone").style.display = "none";
-  }
+phoneInput.addEventListener("input",()=>{
+  var d=phoneInput.value.replace(/\D/g,"");
+  phoneInput.value=d.length>3?d.slice(0,3)+"-"+d.slice(3,11):d;
+  if(d && !d.startsWith("0")){errPhone.style.display="block";phoneInput.classList.add("invalid")}
+  else{errPhone.style.display="none";phoneInput.classList.remove("invalid")}
 });
 
-/* ===== UI ===== */
-function toggleButton() {
-  var btn = document.getElementById("sendBtn");
-  btn.disabled = !document.getElementById("consent").checked;
-  btn.classList.toggle("enabled", !btn.disabled);
+function toggleButton(){
+  sendBtn.disabled=!consent.checked;
+  sendBtn.classList.toggle("enabled",!sendBtn.disabled);
 }
 
-function showOverlay(show) {
-  document.getElementById("overlay").style.display = show ? "flex" : "none";
-  document.getElementById("formBox").classList.toggle("blur", show);
-}
-
-/* ===== VALIDATION ===== */
-function validateAndSend() {
-
-  if (IS_SUBMITTED) return false;
-
-  hideErrors();
-  var valid = true;
-
-  if (!companyVal()) showErr("errCompany"), valid=false;
-  if (!directorVal()) showErr("errDirector"), valid=false;
-  if (!regnoVal()) showErr("errRegno"), valid=false;
-
-  var phoneDigits = phoneVal().replace(/\D/g,"");
-  if (!phoneDigits || !phoneDigits.startsWith("0")) {
-    showErr("errPhone");
-    phoneInput.classList.add("invalid");
-    valid = false;
-  }
-
-  if (!valid) return false;
-
-  IS_SUBMITTED = true;
-  showOverlay(true);
+function validateAndSend(){
+  if(IS_SUBMITTED)return false;
+  IS_SUBMITTED=true;
+  overlay.style.display="flex";
   sendWhatsApp();
   return false;
 }
 
-function showErr(id){ document.getElementById(id).style.display="block"; }
-function hideErrors(){ document.querySelectorAll(".error").forEach(e=>e.style.display="none"); }
-
-/* ===== MAIN ===== */
-function generateReference() {
-  var d=new Date();
-  return "JV5-"+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+String(d.getHours()).padStart(2,"0")+String(d.getMinutes()).padStart(2,"0")+String(d.getSeconds()).padStart(2,"0");
-}
-
+<script>
 function sendWhatsApp() {
 
   var company = companyVal();
@@ -269,6 +192,12 @@ function sendWhatsApp() {
   var ref = generateReference();
   var time = new Date().toLocaleString();
 
+  var consentText =
+    "By submitting this request, I acknowledge that I am requesting access to a " +
+    "password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full " +
+    "responsibility for its use. Unauthorized access or misuse may result in further action.";
+
+  // ===== SEND TO APPS SCRIPT (KEKAL) =====
   var data = new FormData();
   data.append("time", time);
   data.append("company", company);
@@ -280,64 +209,61 @@ function sendWhatsApp() {
   data.append("platform", navigator.platform);
   data.append("lang", navigator.language);
 
-  fetch("https://script.google.com/macros/s/AKfycbzRyXGi1ewQNvzk3hQSmmKSUkOS0-wMbaMUFgetZeYqqoF97Bjc-gfX1Gq4H5ZKp2A2/exec", { method:"POST", body:data })
-    .then(r=>r.json())
-    .then(res=>{
-      if(res.status!=="OK"){
-        alert("Request already submitted or error occurred.");
-        IS_SUBMITTED=false;
-        showOverlay(false);
-        return;
-      }
+  fetch("https://script.google.com/macros/s/AKfycbzRyXGi1ewQNvzk3hQSmmKSUkOS0-wMbaMUFgetZeYqqoF97Bjc-gfX1Gq4H5ZKp2A2/exec", {
+    method: "POST",
+    body: data
+  })
+  .then(r => r.json())
+  .then(res => {
 
-      var msg =
-        "🔐 PASSWORD REQUEST BATCH 5-JV\n\n" +
-        "Time: " + time + "\n\n" +
-        "Company: " + company + "\n" +
-        "Director: " + director + "\n" +
-        "Reg No: " + regno + "\n" +
-        "Contact: " + phone + "\n\n" +
-        "Ref No: " + ref;
+    // ❌ DUPLICATE / ERROR
+    if (res.status !== "OK") {
+      alert("Request already submitted or error occurred.");
+      IS_SUBMITTED = false;
+      showOverlay(false);
+      return;
+    }
 
-      window.open(
-        "https://wa.me/60176701984?text=" + encodeURIComponent(msg),
-        "_blank"
-      );
+    // ===== WHATSAPP MESSAGE (DENGAN CONSENT) =====
+    var msg =
+      "🔐 PASSWORD REQUEST BATCH 5-JV\n\n" +
+      "Time: " + time + "\n\n" +
+      "Company: " + company + "\n" +
+      "Director: " + director + "\n" +
+      "Reg No: " + regno + "\n" +
+      "Contact: " + phone + "\n\n" +
+      "Consent:\n" + consentText + "\n\n" +
+      "Ref No: " + ref;
 
-var consentText =
-  "By submitting this request, I acknowledge that I am requesting access to a " +
-  "password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full " +
-  "responsibility for its use. Unauthorized access or misuse may result in further action.";
+    window.open(
+      "https://wa.me/60176701984?text=" + encodeURIComponent(msg),
+      "_blank"
+    );
 
-document.getElementById("summaryBox").innerHTML =
-  "<b>Company Name:</b> " + company + "<br><br>" +
-  "<b>Director Name:</b> " + director + "<br><br>" +
-  "<b>Company Reg. No:</b> " + regno + "<br><br>" +
-  "<b>Contact No:</b> " + phone + "<br><br>" +
-  "<b>Reference No:</b> " + ref + "<br><hr>" +
-  "<b>Consent:</b><br>" + consentText;
+    // ===== SUCCESS SUMMARY =====
+    document.getElementById("summaryBox").innerHTML =
+      "<b>Company Name:</b> " + company + "<br><br>" +
+      "<b>Director Name:</b> " + director + "<br><br>" +
+      "<b>Company Reg. No:</b> " + regno + "<br><br>" +
+      "<b>Contact No:</b> " + phone + "<br><br>" +
+      "<b>Reference No:</b> " + ref + "<br><hr>" +
+      "<b>Consent:</b><br>" + consentText;
 
-document.getElementById("formBox").style.display = "none";
-document.getElementById("successBox").style.display = "block";
-showOverlay(false);
-
-    });
+    document.getElementById("formBox").style.display = "none";
+    document.getElementById("successBox").style.display = "block";
+    showOverlay(false);
+  })
+  .catch(() => {
+    alert("Network error. Please try again.");
+    IS_SUBMITTED = false;
+    showOverlay(false);
+  });
 }
+</script>
 
-/* ===== HELPERS ===== */
-function companyVal(){ return document.getElementById("company").value.trim().toUpperCase(); }
-function directorVal(){ return document.getElementById("director").value.trim().toUpperCase(); }
-function regnoVal(){ return document.getElementById("regno").value.trim().toUpperCase(); }
-function phoneVal(){ return document.getElementById("phone").value.trim(); }
 
-(function(){
-  document.getElementById("trademark").innerText =
-    "© " + new Date().getFullYear() + " · Authorized Access Only";
-})();
+trademark.innerText="© "+new Date().getFullYear()+" · Authorized Access Only";
 </script>
 
 </body>
 </html>
-
-
-
