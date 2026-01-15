@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Password Request Batch 4-JV</title>
+<title>Password Request Batch 5-JV</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -11,6 +11,7 @@ body {
   background: #f4f6f8;
   padding: 20px;
 }
+
 .container {
   max-width: 420px;
   margin: auto;
@@ -18,22 +19,36 @@ body {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  position: relative;
 }
+
+.blur {
+  filter: blur(3px);
+  pointer-events: none;
+}
+
 h2 { text-align: center; }
 label { font-weight: bold; }
 
 input[type="text"], input[type="tel"] {
   width: 100%;
   padding: 10px;
-  margin: 5px 0 15px;
+  margin: 5px 0 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
   text-transform: uppercase;
 }
 
+.error {
+  color: #d93025;
+  font-size: 12px;
+  margin-bottom: 10px;
+  display: none;
+}
+
 .consent {
   font-size: 13px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 button {
@@ -59,30 +74,54 @@ button.enabled {
   margin-top: 10px;
 }
 
-.statusIcon {
-  text-align: center;
-  margin-bottom: 15px;
+/* ===== OVERLAY ===== */
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
 
-.ref {
-  font-weight: bold;
-  margin-top: 10px;
+.overlayBox {
+  text-align: center;
+  font-size: 14px;
+  color: #333;
 }
 
-.trademark {
-  text-align: center;
-  font-size: 11px;
-  color: #999;
-  margin-top: 25px;
+.spinner {
+  border: 4px solid #ddd;
+  border-top: 4px solid #25D366;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: auto;
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.statusIcon { text-align: center; margin-bottom: 15px; }
+.ref { font-weight: bold; margin-top: 10px; }
+.trademark { text-align: center; font-size: 11px; color: #999; margin-top: 25px; }
 </style>
-
-<script>
-var IS_SUBMITTED = false;
-</script>
 </head>
 
 <body>
+
+<div id="overlay">
+  <div class="overlayBox">
+    <div class="spinner"></div>
+    <p><b>Processing...</b><br>Sending request to WhatsApp</p>
+  </div>
+</div>
 
 <!-- FORM -->
 <div class="container" id="formBox">
@@ -90,23 +129,26 @@ var IS_SUBMITTED = false;
 
   <form onsubmit="return validateAndSend();">
     <label>Company Name</label>
-    <input type="text" id="company" required>
+    <input type="text" id="company" placeholder="e.g. ABC COLLECTION SDN BHD">
+    <div class="error" id="errCompany">All fields are required</div>
 
     <label>Director Name</label>
-    <input type="text" id="director" required>
+    <input type="text" id="director" placeholder="e.g. AHMAD BIN ALI">
+    <div class="error" id="errDirector">All fields are required</div>
 
-    <label>Company Reg. No</label>
-    <input type="text" id="regno" required>
+    <label>Company Reg. No.</label>
+    <input type="text" id="regno" placeholder="e.g. 123456-A or 20251232645564">
+    <div class="error" id="errRegno">All fields are required</div>
 
     <label>Contact No</label>
-    <input type="tel" id="phone" placeholder="e.g. 0123456789" required>
+    <input type="tel" id="phone" placeholder="e.g. 0123456789">
+    <div class="error" id="errPhone">Phone number must start with 0</div>
 
     <div class="consent">
       <input type="checkbox" id="consent" onclick="toggleButton()">
       By submitting this request, I acknowledge that I am requesting access to a
       password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full
-      responsibility for its use. Unauthorized access or misuse may result in further
-      action.
+      responsibility for its use.
     </div>
 
     <button type="submit" id="sendBtn" disabled>Send Request</button>
@@ -115,18 +157,12 @@ var IS_SUBMITTED = false;
   <div class="note">Request will be sent via WhatsApp</div>
 </div>
 
-<!-- SUCCESS PAGE (SAMA SEPERTI ASAL) -->
+<!-- SUCCESS -->
 <div class="container" id="successBox" style="display:none;text-align:center;">
   <div class="statusIcon">📄</div>
-
   <h2>Request Prepared</h2>
-
   <div class="ref" id="refDisplay"></div>
-
-  <p style="font-size:12px;color:#666;">
-    Reference number is for tracking purposes only.
-  </p>
-
+  <p style="font-size:12px;color:#666;">Reference number is for tracking purposes only.</p>
   <p>
     WhatsApp has been opened with your request details.<br><br>
     <b>Please tap “Send” in WhatsApp to complete this request.</b><br><br>
@@ -137,163 +173,105 @@ var IS_SUBMITTED = false;
 <div class="trademark" id="trademark"></div>
 
 <script>
+var IS_SUBMITTED = false;
+
 function toggleButton() {
   var btn = document.getElementById("sendBtn");
   btn.disabled = !document.getElementById("consent").checked;
   btn.classList.toggle("enabled", !btn.disabled);
 }
 
-function generateReference() {
-  var d = new Date();
-  return "JV5-" +
-    d.getFullYear() +
-    String(d.getMonth()+1).padStart(2,"0") +
-    String(d.getDate()).padStart(2,"0") + "-" +
-    String(d.getHours()).padStart(2,"0") +
-    String(d.getMinutes()).padStart(2,"0") +
-    String(d.getSeconds()).padStart(2,"0");
+function showOverlay(show) {
+  document.getElementById("overlay").style.display = show ? "flex" : "none";
+  document.getElementById("formBox").classList.toggle("blur", show);
 }
 
 function validateAndSend() {
   if (IS_SUBMITTED) return false;
 
-  var phone = document.getElementById("phone").value.trim();
-  if (!/^\d{10,15}$/.test(phone)) {
-    alert("Please enter valid phone number (digits only).");
-    return false;
+  var company = companyVal();
+  var director = directorVal();
+  var regno = regnoVal();
+  var phone = phoneVal();
+
+  hideErrors();
+
+  var valid = true;
+
+  if (!company) showErr("errCompany"), valid=false;
+  if (!director) showErr("errDirector"), valid=false;
+  if (!regno) showErr("errRegno"), valid=false;
+
+  if (!phone || !phone.startsWith("0")) {
+    showErr("errPhone");
+    valid = false;
   }
 
-  if (!document.getElementById("consent").checked) return false;
+  if (!valid) return false;
 
   IS_SUBMITTED = true;
-  document.getElementById("sendBtn").innerText = "Preparing...";
-
+  showOverlay(true);
   sendWhatsApp();
   return false;
 }
 
+function showErr(id){ document.getElementById(id).style.display="block"; }
+function hideErrors(){ document.querySelectorAll(".error").forEach(e=>e.style.display="none"); }
+
+function generateReference() {
+  var d=new Date();
+  return "JV5-"+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+String(d.getHours()).padStart(2,"0")+String(d.getMinutes()).padStart(2,"0")+String(d.getSeconds()).padStart(2,"0");
+}
+
 function sendWhatsApp() {
+  var company=companyVal(), director=directorVal(), regno=regnoVal(), phone=phoneVal();
+  var ref=generateReference(), time=new Date().toLocaleString();
 
-  var company = document.getElementById("company").value.toUpperCase();
-  var director = document.getElementById("director").value.toUpperCase();
-  var regno = document.getElementById("regno").value.toUpperCase();
-  var phone = document.getElementById("phone").value;
-  var ref = generateReference();
-  var time = new Date().toLocaleString();
+  var data=new FormData();
+  data.append("time",time);
+  data.append("company",company);
+  data.append("director",director);
+  data.append("regno",regno);
+  data.append("phone",phone);
+  data.append("ref",ref);
+  data.append("ua",navigator.userAgent);
+  data.append("platform",navigator.platform);
+  data.append("lang",navigator.language);
 
-  var data = new FormData();
-  data.append("time", time);
-  data.append("company", company);
-  data.append("director", director);
-  data.append("regno", regno);
-  data.append("phone", phone);
-  data.append("ref", ref);
-  data.append("ua", navigator.userAgent);
-  data.append("platform", navigator.platform);
-  data.append("lang", navigator.language);
-
-  fetch("https://script.google.com/macros/s/AKfycbzn0OosMAczB2WBsw_VUd3zUwfGAsTTV4j4e3T3a6SMWIp0u4stBtdDf-kl1IPZczwi/exec", {
-    method: "POST",
-    body: data
-  })
-  .then(r => r.json())
-  .then(res => {
-
-    // ❌ DUPLICATE → STOP SEMUA
-    if (res.status === "DUPLICATE") {
-      alert("⚠️ Request has already been submitted previously.\n\nPlease contact the administrator.");
-
-      IS_SUBMITTED = false;
-      var btn = document.getElementById("sendBtn");
-      btn.innerText = "Send Request";
-      btn.disabled = false;
+  fetch("https://script.google.com/macros/s/AKfycbzn0OosMAczB2WBsw_VUd3zUwfGAsTTV4j4e3T3a6SMWIp0u4stBtdDf-kl1IPZczwi/exec",{method:"POST",body:data})
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status!=="OK"){
+      alert("Request already submitted or error occurred.");
+      IS_SUBMITTED=false;
+      showOverlay(false);
       return;
     }
 
-    // ❌ ERROR
-    if (res.status !== "OK") {
-      alert("Submission failed. Please try again.");
-      IS_SUBMITTED = false;
-      return;
-    }
+    var msg="🔐 PASSWORD REQUEST BATCH 5-JV\n\nTime: "+time+"\n\nCompany: "+company+"\nDirector: "+director+"\nReg No: "+regno+"\nContact: "+phone+"\n\nRef No: "+ref;
+    window.open("https://wa.me/60176701984?text="+encodeURIComponent(msg),"_blank");
 
-    // ✅ ONLY NOW OPEN WHATSAPP
-    var msg =
-      "🔐 PASSWORD REQUEST BATCH 5-JV\n\n" +
-      "Time: " + time + "\n\n" +
-      "Company: " + company + "\n" +
-      "Director: " + director + "\n" +
-      "Reg No: " + regno + "\n" +
-      "Contact: " + phone + "\n\n" +
-      "Ref No: " + ref;
-
-    window.open(
-      "https://wa.me/60176701984?text=" + encodeURIComponent(msg),
-      "_blank"
-    );
-
-    document.getElementById("formBox").style.display = "none";
-    document.getElementById("successBox").style.display = "block";
-    document.getElementById("refDisplay").innerText = "Reference No: " + ref;
-
+    document.getElementById("formBox").style.display="none";
+    document.getElementById("successBox").style.display="block";
+    document.getElementById("refDisplay").innerText="Reference No: "+ref;
+    showOverlay(false);
   })
-  .catch(() => {
+  .catch(()=>{
     alert("Network error. Please try again.");
-    IS_SUBMITTED = false;
+    IS_SUBMITTED=false;
+    showOverlay(false);
   });
 }
 
+function companyVal(){return document.getElementById("company").value.trim().toUpperCase();}
+function directorVal(){return document.getElementById("director").value.trim().toUpperCase();}
+function regnoVal(){return document.getElementById("regno").value.trim().toUpperCase();}
+function phoneVal(){return document.getElementById("phone").value.trim();}
 
-function logToGoogleSheet(time, company, director, regno, phone, ref) {
-
-  var data = new FormData();
-  data.append("time", time);
-  data.append("company", company);
-  data.append("director", director);
-  data.append("regno", regno);
-  data.append("phone", phone);
-  data.append("ref", ref);
-  data.append("ua", navigator.userAgent);
-  data.append("platform", navigator.platform);
-  data.append("lang", navigator.language);
-
-  fetch("https://script.google.com/macros/s/AKfycbysH9fDrsqHgfo4fZb-cbZB2erobpSjJOzcGekkR82Qrr_tmYOGBn74A_gVo2lFn60Q/exec", {
-    method: "POST",
-    body: data
-  })
-  .then(r => r.json())
-  .then(res => {
-
-    if (res.status === "DUPLICATE") {
-      alert("⚠️ Request already submitted.\n\nThis agency has made a request previously.");
-
-      IS_SUBMITTED = false;
-      document.getElementById("sendBtn").innerText = "Send Request";
-      document.getElementById("sendBtn").disabled = false;
-
-      document.getElementById("successBox").style.display = "none";
-      document.getElementById("formBox").style.display = "block";
-    }
-
-  })
-  .catch(function(){});
-}
-
-
-(function () {
-  var year = new Date().getFullYear();
-  var domain = window.location.hostname || "yourdomain.com";
-  document.getElementById("trademark").innerText =
-    "© " + year + " " + domain + " · Authorized Access Only";
+(function(){
+  document.getElementById("trademark").innerText="© "+new Date().getFullYear()+" · Authorized Access Only";
 })();
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
