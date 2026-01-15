@@ -316,7 +316,13 @@ button.enabled:hover{
 </div>
 
 
-<div class="trademark" id="trademark"></div>
+<div class="trademark">
+  © <span id="year"></span> · 
+  <a href="https://sczpnet.org" target="_blank" rel="noopener">
+    sczpnet.org
+  </a>
+</div>
+
 
 <script>
 var IS_SUBMITTED = false;
@@ -453,14 +459,14 @@ function regnoVal(){return document.getElementById("regno").value.trim().toUpper
 function phoneVal(){return document.getElementById("phone").value.trim();}
 
 (function(){
-  const year=new Date().getFullYear();
-  trademark.innerHTML=
-    `© ${year} <a href="https://sczpnet.org" target="_blank">sczpnet.org</a> · Authorized Access Only";
+  document.getElementById("year").innerText = new Date().getFullYear();
 })();
+
 </script>
 
 </body>
 </html>
+
 
 
 
