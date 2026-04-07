@@ -3,224 +3,349 @@
 <head>
 <meta charset="UTF-8">
 <title>Password Request Batch 5-JV</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* ===== BASE ===== */
-:root{
-  --primary:#1f9d55;
-  --primary-soft:rgba(31,157,85,.15);
-  --danger:#d93025;
-  --bg:#f3f5f7;
-  --border:#dcdfe3;
-  --text:#1f2933;
-  --muted:#6b7280;
+/* ===== BASE & VARIABLES ===== */
+:root {
+  --primary: #10b981; /* Emerald Green */
+  --primary-hover: #059669;
+  --primary-soft: rgba(16, 185, 129, 0.1);
+  --danger: #ef4444;
+  --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%);
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
 }
 
-*{box-sizing:border-box}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
 
-body{
-  margin:0;
-  padding:20px;
-  font-family: "Inter", system-ui, -apple-system, Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
+body {
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 /* ===== CONTAINER ===== */
-.container{
-  max-width:440px;
-  margin:auto;
-  background:#fff;
-  padding:22px;
-  border-radius:12px;
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
-  position:relative;
+.container {
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  padding: 40px 32px;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  position: relative;
+  transition: filter 0.3s ease;
 }
 
 /* ===== HEADER ===== */
-h2{
-  text-align:center;
-  margin:0 0 18px;
-  font-size:20px;
-  letter-spacing:.3px;
+h2 {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  letter-spacing: -0.5px;
+  color: var(--text-main);
 }
 
-/* ===== FORM ===== */
-label{
-  font-weight:600;
-  font-size:13px;
-  display:block;
-  margin-top:14px;
+.header-subtitle {
+  display: block;
+  font-size: 15px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 4px;
 }
 
-input[type="text"],
-input[type="tel"]{
-  width:100%;
-  padding:11px 12px;
-  margin-top:6px;
-  border:1px solid var(--border);
-  border-radius:8px;
-  font-size:14px;
-  background:#fff;
-  text-transform:uppercase;
-  transition:border .2s, box-shadow .2s;
+/* ===== FLOATING INPUTS ===== */
+.input-group {
+  position: relative;
+  margin-bottom: 22px;
 }
 
-/* INPUT FOCUS */
-input:focus{
-  outline:none;
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px var(--primary-soft);
+.input-group input {
+  width: 100%;
+  padding: 24px 16px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  background: #f8fafc;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
 }
 
-/* ERROR */
-.error{
-  display:none;
-  font-size:12px;
-  color:var(--danger);
-  margin-top:5px;
-  animation:shake .25s linear;
+.input-group label {
+  position: absolute;
+  left: 16px;
+  top: 18px;
+  font-size: 15px;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
 
-@keyframes shake{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-3px)}
-  50%{transform:translateX(3px)}
-  75%{transform:translateX(-3px)}
-  100%{transform:translateX(0)}
+.input-group input:focus,
+.input-group input:not(:placeholder-shown) {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 4px var(--primary-soft);
 }
 
-/* ===== CONSENT ===== */
-.consent{
-  margin-top:14px;
-  font-size:12px;
-  color:#374151;
-  line-height:1.5;
+.input-group input:focus ~ label,
+.input-group input:not(:placeholder-shown) ~ label {
+  top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+
+/* ===== ERROR MESSAGES ===== */
+.error {
+  display: none;
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 6px;
+  margin-left: 4px;
+  font-weight: 500;
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* ===== CONSENT CHECKBOX ===== */
+.consent-wrapper {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 10px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.consent-wrapper input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.consent-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
 /* ===== BUTTON ===== */
-button{
-  margin-top:18px;
-  width:100%;
-  padding:13px;
-  background:linear-gradient(135deg,#25D366,#1f9d55);
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  font-size:15px;
-  font-weight:600;
-  cursor:not-allowed;
-  opacity:.6;
-  transition:transform .15s, box-shadow .15s, opacity .15s;
+button {
+  width: 100%;
+  padding: 16px;
+  background: #cbd5e1;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
-button.enabled{
-  cursor:pointer;
-  opacity:1;
+button.enabled {
+  background: var(--primary);
+  cursor: pointer;
+  box-shadow: 0 10px 20px var(--primary-soft);
 }
 
-button.enabled:hover{
-  transform:translateY(-1px);
-  box-shadow:0 6px 14px rgba(0,0,0,.15);
+button.enabled:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.25);
 }
 
-/* ===== NOTE ===== */
-.note{
-  margin-top:10px;
-  font-size:12px;
-  text-align:center;
-  color:var(--muted);
+button.enabled:active {
+  transform: translateY(0);
 }
 
-/* ===== OVERLAY ===== */
-#overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(255,255,255,.8);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
+.note {
+  margin-top: 16px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
-.overlayBox{
-  text-align:center;
-  font-size:14px;
+/* ===== OVERLAY & SPINNER ===== */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
 
-.spinner{
-  width:44px;
-  height:44px;
-  border:4px solid #ddd;
-  border-top:4px solid var(--primary);
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:0 auto 12px;
+.overlayBox {
+  text-align: center;
+  background: white;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #f1f5f9;
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+  margin: 0 auto 16px;
 }
 
-/* ===== BLUR ===== */
-.blur{
-  filter:blur(3px);
-  pointer-events:none;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-/* ===== SUCCESS ===== */
-.statusIcon,
-.successIcon{
-  font-size:46px;
-  color:var(--primary);
-  animation:pop .35s ease;
+.blur {
+  filter: blur(4px);
+  pointer-events: none;
 }
 
-@keyframes pop{
-  0%{transform:scale(.6);opacity:0}
-  100%{transform:scale(1);opacity:1}
+/* ===== SUCCESS STATE & SUMMARY BOX ===== */
+.statusIcon {
+  width: 72px;
+  height: 72px;
+  background: var(--primary-soft);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--primary);
+  font-size: 32px;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.ref{
-  margin-top:10px;
-  font-weight:600;
-  cursor:pointer;
-  user-select:none;
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-/* ===== SUMMARY BOX ===== */
-.summary{
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:14px;
-  margin-top:16px;
-  background:#fafafa;
-  font-size:13px;
+.ref {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  background: #f1f5f9;
+  padding: 12px 20px;
+  border-radius: 10px;
+  display: inline-block;
+  margin: 15px 0;
+  letter-spacing: 1px;
+}
+
+.summary-card {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.summary-card h3 {
+  font-size: 14px;
+  color: var(--text-main);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.summary-item {
+  margin-bottom: 12px;
+}
+
+.summary-item span {
+  display: block;
+}
+
+.summary-item .label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.summary-item .value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.summaryNote {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.consent-confirm {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed #cbd5e1;
+  text-align: left;
+  line-height: 1.6;
 }
 
 /* ===== FOOTER ===== */
-.trademark{
-  margin-top:24px;
-  text-align:center;
-  font-size:11px;
-  color:#9ca3af;
+.trademark {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (min-width:768px){
-  body{padding:40px}
-  .container{max-width:520px}
-  h2{font-size:22px}
+.trademark a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
 }
-
-  .summaryNote{
-  display:block;
-  margin-top:4px;
-  font-size:11px;
-  color:#6b7280;
-}
-
 </style>
 </head>
 
@@ -229,113 +354,124 @@ button.enabled:hover{
 <div id="overlay">
   <div class="overlayBox">
     <div class="spinner"></div>
-    <p><b>Processing...</b><br>Sending request to WhatsApp</p>
+    <p style="color: #0f172a; font-size: 15px; margin-bottom: 4px;"><b>Processing...</b></p>
+    <p style="color: #64748b; font-size: 13px;">Preparing secure request</p>
   </div>
 </div>
 
-<!-- FORM -->
 <div class="container" id="formBox">
-  <h2>🔐 Password Request Batch 5-JV</h2>
+  <h2>🔐 Password Request<br><span class="header-subtitle">Batch 5-JV</span></h2>
 
   <form onsubmit="return validateAndSend();">
-    <label>Company Name</label>
-    <input type="text" id="company" placeholder="e.g. ABC COLLECTION SDN BHD">
-    <div class="error" id="errCompany">All fields are required</div>
-
-    <label>Director Name</label>
-    <input type="text" id="director" placeholder="e.g. AHMAD BIN ALI">
-    <div class="error" id="errDirector">All fields are required</div>
-
-    <label>Company Reg. No.</label>
-    <input type="text" id="regno" placeholder="e.g. 123456-A or 20251232645564">
-    <div class="error" id="errRegno">All fields are required</div>
-
-    <label>Contact No</label>
-    <input type="tel" id="phone" placeholder="e.g. 0123456789">
-    <div class="note" style="text-align:left;font-size:11px;margin-top:4px;">
-    Contact number is for verification purposes only and may not be used for password delivery.</div>
-    <div class="error" id="errPhone">Phone number must start with 0</div>
-
-    <div class="consent">
-      <input type="checkbox" id="consent" onclick="toggleButton()">
-      By submitting this request, I acknowledge that I am requesting access to a
-      password issued by SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD and accept full
-      responsibility for its use.
+    
+    <div class="input-group">
+      <input type="text" id="company" placeholder=" " autocomplete="off">
+      <label>Company Name (e.g. ABC SDN BHD)</label>
+      <div class="error" id="errCompany">This field is required</div>
     </div>
 
-    <button type="submit" id="sendBtn" disabled>Send Request</button>
+    <div class="input-group">
+      <input type="text" id="director" placeholder=" " autocomplete="off">
+      <label>Director Name</label>
+      <div class="error" id="errDirector">This field is required</div>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="regno" placeholder=" " autocomplete="off">
+      <label>Company Reg. No. (e.g. 123456-A)</label>
+      <div class="error" id="errRegno">This field is required</div>
+    </div>
+
+    <div class="input-group">
+      <input type="tel" id="phone" placeholder=" " autocomplete="off">
+      <label>Contact No (e.g. 0123456789)</label>
+      <div class="note" style="text-align:left; font-size:11px; margin-top:6px; margin-left:4px;">
+        Contact number is for verification purposes only and may not be used for password delivery.
+      </div>
+      <div class="error" id="errPhone">Phone number must start with 0</div>
+    </div>
+
+    <div class="consent-wrapper">
+      <input type="checkbox" id="consent" onclick="toggleButton()">
+      <div class="consent-text">
+        By submitting this request, I acknowledge that I am requesting access to a
+        password issued by <b>SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD</b> and accept full
+        responsibility for its use.
+      </div>
+    </div>
+
+    <button type="submit" id="sendBtn" disabled>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+      Send Request
+    </button>
   </form>
 
-  <div class="note">Request will be sent via WhatsApp</div>
+  <div class="note">Encrypted request will be sent via WhatsApp</div>
 </div>
 
-<!-- SUCCESS -->
-<div class="container" id="successBox" style="display:none;">
-  <div style="text-align:center;">
-    <div class="statusIcon">📄</div>
-    <h2>Request Prepared</h2>
-    <div class="ref" id="refDisplay"></div>
-    <p style="font-size:12px;color:#666;">
-      Reference number is for tracking purposes only.
-    </p>
+<div class="container" id="successBox" style="display:none; text-align:center;">
+  
+  <div class="statusIcon">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <line x1="16" y1="13" x2="8" y2="13"></line>
+      <line x1="16" y1="17" x2="8" y2="17"></line>
+      <polyline points="10 9 9 9 8 9"></polyline>
+    </svg>
+  </div>
+  
+  <h2>Request Prepared</h2>
+  <div class="ref" id="refDisplay"></div>
+  <p style="font-size:12px; color:#64748b; margin-top:-5px;">Reference number is for tracking purposes only.</p>
+
+  <div class="summary-card">
+    <h3>📝 Request Summary</h3>
+    
+    <div class="summary-item">
+      <span class="label">Company Name</span>
+      <span class="value" id="sumCompany"></span>
+    </div>
+    
+    <div class="summary-item">
+      <span class="label">Director Name</span>
+      <span class="value" id="sumDirector"></span>
+    </div>
+    
+    <div class="summary-item">
+      <span class="label">Company Reg. No.</span>
+      <span class="value" id="sumRegno"></span>
+    </div>
+    
+    <div class="summary-item">
+      <span class="label">Contact No</span>
+      <span class="value" id="sumPhone"></span>
+      <span class="summaryNote">Contact number is for verification purposes only and may not be used for password delivery.</span>
+    </div>
+
+    <div class="consent-confirm">
+      By submitting this request, you have confirmed that you acknowledge and
+      accept full responsibility for the use of the password issued by
+      <b>SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD</b>.
+    </div>
   </div>
 
-  <!-- SUMMARY BOX -->
-  <div style="
-      border:1px solid #ddd;
-      border-radius:6px;
-      padding:12px;
-      margin-top:15px;
-      font-size:13px;
-      background:#fafafa;
-  ">
-    <b>Request Summary</b><br><br>
-
-    <b>Company Name</b><br>
-    <span id="sumCompany"></span><br><br>
-
-    <b>Director Name</b><br>
-    <span id="sumDirector"></span><br><br>
-
-    <b>Company Reg. No.</b><br>
-    <span id="sumRegno"></span><br><br>
-
-    <b>Contact No</b><br>
-<span id="sumPhone"></span><br>
-<span class="summaryNote">
-  Contact number is for verification purposes only and may not be used for password delivery.
-</span>
-
+  <div style="background: #f0fdf4; border: 1px dashed #86efac; border-radius: 12px; padding: 15px; margin-top: 20px;">
+    <p style="font-size: 14px; color: #166534;">WhatsApp has been opened with your details.</p>
+    <p style="font-size: 14px; color: #14532d; margin-top: 8px;"><b>Please tap “Send” in WhatsApp to complete this request.</b></p>
   </div>
+  
+  <p style="margin-top: 15px; font-size: 13px; color: #64748b;">After sending, you may safely close this page.</p>
 
-  <!-- CONSENT CONFIRMATION -->
-  <div style="
-      font-size:12px;
-      color:#555;
-      margin-top:12px;
-      padding-top:10px;
-      border-top:1px dashed #ccc;
-  ">
-    By submitting this request, you have confirmed that you acknowledge and
-    accept full responsibility for the use of the password issued by
-    <b>SINGER (M) SDN BHD / BERJAYA CREDIT SDN BHD</b>.
-  </div>
-
-  <p style="text-align:center;margin-top:15px;font-size:13px;">
-    WhatsApp has been opened with your request details.<br><br>
-    <b>Please tap “Send” in WhatsApp to complete this request.</b><br><br>
-    After sending, you may safely close this page.
-  </p>
 </div>
-
 
 <div class="trademark">
   © <span id="year"></span>
-  Powered by
-  <a href="https://sczpnet.org" target="_blank" rel="noopener">
-    sczpnet.org
-  </a>
-  · Internal Use Only ·
+  Powered by <a href="https://sczpnet.org" target="_blank" rel="noopener">sczpnet.org</a>
+  <br>· Internal Use Only ·
 </div>
 
 <script>
@@ -496,7 +632,7 @@ var msg =
 
 document.getElementById("formBox").style.display="none";
 document.getElementById("successBox").style.display="block";
-document.getElementById("refDisplay").innerText="Reference No: "+ref;
+document.getElementById("refDisplay").innerText="Ref: "+ref;
 
 document.getElementById("sumCompany").innerText = company;
 document.getElementById("sumDirector").innerText = director;
@@ -521,7 +657,6 @@ function phoneVal(){return document.getElementById("phone").value.trim();}
 (function(){
   document.getElementById("year").innerText = new Date().getFullYear();
 })();
-
 </script>
 
 </body>
